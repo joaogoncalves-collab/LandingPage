@@ -8,3 +8,4 @@ Logos usados na faixa de empresas impactadas:
 - Cargill: https://commons.wikimedia.org/wiki/File:Cargill_logo.svg
 - JBS: https://commons.wikimedia.org/wiki/File:JBS_Logo.svg
 - Solidaridad: arquivo local fornecido pelo usuário (`solidaridad-editor-logo.png`).
+- Sea Shepherd Brasil: https://seashepherd.org.br/wp-content/uploads/2023/05/jolly-brasil-2023-05.png

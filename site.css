@@ -158,3 +158,20 @@ body.fixed-stacks .stack-hint{display:none}
  body.fixed-stacks .dashboard-stack:is(:hover,:focus-visible,.expanded) .panel-next{right:1%}
 }
 @media(prefers-reduced-motion:reduce){body.fixed-stacks .dashboard-stack .panel{transition:none}}
+
+/* Sea Shepherd: four static, centered report pages; color follows scroll or hover. */
+.sea-case .case-top h3{font-size:clamp(3.3rem,6.5vw,8rem)}
+.sea-visual{height:clamp(440px,58vw,800px)}
+body.fixed-stacks .sea-stack .panel,body.fixed-stacks .sea-stack:is(:hover,:focus-visible,.expanded) .panel{position:absolute;top:50%;width:29%;height:79%;max-height:none;object-fit:contain;opacity:1;filter:grayscale(1);box-shadow:0 20px 36px #0008;transition:filter .65s ease,transform .65s ease}
+body.fixed-stacks .sea-stack .panel-prev,body.fixed-stacks .sea-stack:is(:hover,:focus-visible,.expanded) .panel-prev{left:15%;right:auto;z-index:1;transform:translate(-50%,-50%) rotate(-4deg)}
+body.fixed-stacks .sea-stack .panel-main,body.fixed-stacks .sea-stack:is(:hover,:focus-visible,.expanded) .panel-main{left:38%;right:auto;z-index:4;transform:translate(-50%,-50%) rotate(-1deg)}
+body.fixed-stacks .sea-stack .panel-next,body.fixed-stacks .sea-stack:is(:hover,:focus-visible,.expanded) .panel-next{left:62%;right:auto;z-index:3;transform:translate(-50%,-50%) rotate(1deg)}
+body.fixed-stacks .sea-stack .panel-four,body.fixed-stacks .sea-stack:is(:hover,:focus-visible,.expanded) .panel-four{left:85%;right:auto;z-index:2;transform:translate(-50%,-50%) rotate(4deg)}
+body.fixed-stacks .sea-visual.color-on .panel,body.fixed-stacks .sea-visual:hover .panel{filter:grayscale(0)}
+.sea-link{display:inline-block;margin-top:22px;padding:12px 0;border-bottom:2px solid var(--acid);color:var(--acid);font-size:12px;font-weight:900;letter-spacing:.14em}
+.sea-link:hover{color:var(--off)}
+.logo-grid{grid-template-columns:repeat(7,minmax(0,1fr))}
+@media(max-width:900px){.logo-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:600px){.sea-visual{height:clamp(320px,105vw,480px)}body.fixed-stacks .sea-stack .panel,body.fixed-stacks .sea-stack:is(:hover,:focus-visible,.expanded) .panel{width:39%;height:75%}.logo-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:430px){.logo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){body.fixed-stacks .sea-stack .panel{transition:none}}
