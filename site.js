@@ -60,6 +60,16 @@ const mapHighlights={
  HN:[{commodity:'Palm',partners:['RSPO']}],
  CO:[{commodity:'Coffee',partners:['Norad']},{commodity:'Sugarcane',partners:['Cenicaña']},{commodity:'Palm',partners:['Cargill','Henkel','PPI','Fedepalma']}]
 };
+const featuredCountries={
+ MX:{pt:'Nestlé + projetos de palma',en:'Nestlé + palm projects',es:'Nestlé + proyectos de palma'},
+ HN:{pt:'RSPO + iniciativas de palma',en:'RSPO + palm initiatives',es:'RSPO + iniciativas de palma'},
+ CO:{pt:'Cenicaña · Norad + projetos de palma',en:'Cenicaña · Norad + palm projects',es:'Cenicaña · Norad + proyectos de palma'},
+ BR:{pt:'Raízen · Coca-Cola · JBS',en:'Raízen · Coca-Cola · JBS',es:'Raízen · Coca-Cola · JBS'}
+};
+for(const lang of ['pt','en','es']){
+ translations[lang].commoditiesLabel={pt:'COMMODITIES',en:'COMMODITIES',es:'PRODUCTOS'}[lang];
+ translations[lang].highlightsLabel={pt:'DESTAQUES',en:'HIGHLIGHTS',es:'DESTACADOS'}[lang];
+}
 function countrySummary(code){
  if(mapHighlights[code])return mapHighlights[code];
  const groups=new Map();
@@ -74,14 +84,10 @@ function renderCountry(code){
  document.querySelectorAll('.map-area [data-country]').forEach(p=>{const selected=p.dataset.country===code;p.classList.toggle('active',selected);p.setAttribute('aria-pressed',String(selected))});
  document.getElementById('countryName').textContent=d.name[currentLang];
  document.getElementById('countryRegion').textContent=translations[currentLang].region;
- const list=document.getElementById('projectList');
- list.replaceChildren(...countrySummary(code).map(item=>{
-  const li=document.createElement('li'),strong=document.createElement('strong'),span=document.createElement('span');
-  li.className='commodity-card';
-  strong.textContent=commodityNames[item.commodity]?.[currentLang]||item.commodity;
-  span.textContent=item.partners.join(' · ');
-  li.append(strong,span);return li;
- }));
+ const summary=countrySummary(code);
+ document.getElementById('countryCommodities').textContent=summary.map(item=>commodityNames[item.commodity]?.[currentLang]||item.commodity).join(' · ');
+ const partners=[...new Set(summary.flatMap(item=>item.partners))].slice(0,3);
+ document.getElementById('countryHighlights').textContent=featuredCountries[code]?.[currentLang]||partners.join(' · ');
 }
 function setLang(lang){if(!translations[lang])lang='pt';currentLang=lang;document.documentElement.lang=lang==='pt'?'pt-BR':lang;document.querySelectorAll('[data-i18n]').forEach(el=>{const value=translations[lang][el.dataset.i18n];if(value!==undefined)el.innerHTML=value});document.querySelectorAll('[data-screen-label]').forEach(b=>b.setAttribute('aria-label',translations[lang][b.dataset.screenLabel]));document.querySelectorAll('[data-i18n-aria]').forEach(b=>b.setAttribute('aria-label',translations[lang][b.dataset.i18nAria]));document.querySelectorAll('.langs button').forEach(b=>{const active=b.dataset.lang===lang;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});try{localStorage.setItem('jvg-lang',lang)}catch{}document.querySelectorAll('.map-area [data-country]').forEach(p=>p.setAttribute('aria-label',countryProjects[p.dataset.country].name[lang]));renderCountry(currentCountry);applyLocaleExtras(lang)}
 document.querySelectorAll('.langs button').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
@@ -99,13 +105,25 @@ const menuToggle=document.querySelector(".menu-toggle"), navLinks=document.query
 
 
 let centralScreen=0;const centralGallery=document.getElementById('centralGallery'),centralFigures=[...centralGallery.querySelectorAll('figure')];
-function showCentralScreen(index){centralScreen=Math.max(0,Math.min(index,centralFigures.length-1));centralGallery.scrollTo({left:centralScreen*centralGallery.clientWidth,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});}
+function showCentralScreen(index){
+ centralScreen=(index+centralFigures.length)%centralFigures.length;
+ centralFigures.forEach((figure,i)=>{
+  const forward=(i-centralScreen+centralFigures.length)%centralFigures.length;
+  const offset=forward>Math.floor(centralFigures.length/2)?forward-centralFigures.length:forward;
+  figure.dataset.position=offset;
+  figure.classList.toggle('active',offset===0);
+  figure.setAttribute('aria-hidden',String(offset!==0));
+ });
+}
 document.querySelector('.central-prev').addEventListener('click',()=>showCentralScreen(centralScreen-1));
 document.querySelector('.central-next').addEventListener('click',()=>showCentralScreen(centralScreen+1));
 let centralWheelAt=0;
 centralGallery.addEventListener('wheel',event=>{if(Math.abs(event.deltaY)<8||Math.abs(event.deltaX)>Math.abs(event.deltaY))return;const direction=Math.sign(event.deltaY);if((direction>0&&centralScreen===centralFigures.length-1)||(direction<0&&centralScreen===0))return;event.preventDefault();if(Date.now()-centralWheelAt<500)return;centralWheelAt=Date.now();showCentralScreen(centralScreen+direction);},{passive:false});
-centralGallery.addEventListener('scroll',()=>{centralScreen=Math.round(centralGallery.scrollLeft/centralGallery.clientWidth)},{passive:true});
 centralGallery.addEventListener('keydown',event=>{if(event.key==='ArrowRight'||event.key==='ArrowLeft'){event.preventDefault();showCentralScreen(centralScreen+(event.key==='ArrowRight'?1:-1));}});
+let centralTouchX=0;
+centralGallery.addEventListener('touchstart',event=>{centralTouchX=event.changedTouches[0].clientX},{passive:true});
+centralGallery.addEventListener('touchend',event=>{const delta=event.changedTouches[0].clientX-centralTouchX;if(Math.abs(delta)>45)showCentralScreen(centralScreen+(delta<0?1:-1))},{passive:true});
+showCentralScreen(0);
 
 
 // The three screenshots remain centered and still; scroll or hover reveals their original color.
