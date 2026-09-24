@@ -197,4 +197,4 @@ body.fixed-stacks .sea-visual.color-on .panel,body.fixed-stacks .sea-visual:hove
 /* Keep the BI pages fully opaque so the fan has no translucent ghost bands. */
 body.fixed-stacks .case-visual .dashboard-stack .panel{opacity:1!important;mix-blend-mode:normal;box-shadow:none}
 body.fixed-stacks .case-visual .dashboard-stack .panel-main{z-index:10}
-.case-study-link{margin-left:24px;color:var(--off);border-color:var(--off)}.case-study-link:hover{color:var(--acid);border-color:var(--acid)}
+.case-links{display:flex;align-items:center;gap:28px;margin-top:18px}.case-links .case-source{margin-top:0}.case-study-link{margin-left:0;color:var(--off);border-color:var(--off)}.case-study-link:hover{color:var(--acid);border-color:var(--acid)}
